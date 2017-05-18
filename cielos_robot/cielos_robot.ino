@@ -8,14 +8,6 @@
 
 Robot robot;
 
-int angle1 = 90;
-int angle2 = 90;
-
-int distance;
-
-Servo servo1;
-Servo servo2;
-
 const int SLOW = 100;
 const int NORMAL = 130;
 const int FAST = 200;

@@ -9,17 +9,21 @@
 
 class Robot {
     public:
-        Robot();
+        Robot(int SPEED, int OBSTACLE_DISTANCE);
         ~Robot();
         void setup();
 
         void stop();
-        void reverse(int ms, int speed);
-        void forwards(int ms, int speed);
-        void right(int ms, int speed);
-        void left(int ms, int speed);
+        void reverse(int ms);
+        void forwards(int ms);
+        void right(int ms);
+        void left(int ms);
         void scan();
         void reset();
+        void set_left_angle(int new_angle);
+        void set_right_angle(int new_angle);
+        void scan_left();
+        void scan_right();
 
         int obstacle_detected();
 
@@ -31,11 +35,13 @@ class Robot {
         UltraSound *ultraSoundRight;
         UltraSound *ultraSoundCenter;
         
-        int obstacle_threshold;
+        int OBSTACLE_DISTANCE;
+        int SPEED;
 
         void update();
         int get_distance(UltraSound *ultraSound);
         int repeat(int *numbers, int length);
+        int check_angle(UltraSound *ultraSound);
 
         void motor_left_reverse(int speed);
         void motor_left_forward(int speed);

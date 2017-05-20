@@ -8,7 +8,7 @@ class UltraSound {
     public:
 
         UltraSound(int trigPin, int echoPin);
-        UltraSound(int trigPin, int echoPin, Servo servo, int servoPin);
+        UltraSound(int trigPin, int echoPin, Servo servo, int servoPin, int MIN_ANGLE, int MAX_ANGLE);
         ~UltraSound();
 
         void scan();
@@ -17,6 +17,8 @@ class UltraSound {
         void change_direction();
         void update_distances();
         int* get_distances();
+        int get_angle();
+        int set_angle(int new_angle);
 
         int trigPin;
         int echoPin;
@@ -32,6 +34,8 @@ class UltraSound {
         Servo servo;
         int servoPin;
         int angle;
+        int MIN_ANGLE;
+        int MAX_ANGLE;
         bool direction;
 };
 

@@ -1,14 +1,15 @@
 #include "Robot.h"
 
-Robot::Robot() {
+Robot::Robot(int SPEED, int OBSTACLE_DISTANCE) {
     Servo servoLeft, servoRight;
 
-    ultraSoundLeft = new UltraSound(18, 19, servoLeft, 9);
-    ultraSoundRight = new UltraSound(14, 15, servoRight, 10);
+    ultraSoundLeft = new UltraSound(18, 19, servoLeft, 9, 25, 125);
+    ultraSoundRight = new UltraSound(14, 15, servoRight, 10, 55, 155);
     ultraSoundCenter = new UltraSound(17, 16);
     motorLeft = new AF_DCMotor(3);
     motorRight = new AF_DCMotor(2);
-    this->obstacle_threshold = 30;
+    this->OBSTACLE_DISTANCE = 15;
+    this->SPEED = SPEED;
 }
 
 Robot::~Robot() {
@@ -41,7 +42,7 @@ void Robot::motor_right_reverse(int speed) {
 }
 
 void Robot::motor_left_forward(int speed) {
-    motorLeft->setSpeed(speed);
+    motorLeft->setSpeed(SPEED);
     motorLeft->run(FORWARD);
 }
 
@@ -53,38 +54,39 @@ void Robot::motor_right_forward(int speed) {
 void Robot::stop() {
     motorLeft->run(RELEASE);
     motorRight->run(RELEASE);
-    delay(500);
-    update();
+    delay(250);
 }
 
-void Robot::forwards(int ms, int speed) {
-    motor_left_forward(speed);
-    motor_right_forward(speed);
+void Robot::forwards(int ms) {
+    motor_left_forward(SPEED);
+    motor_right_forward(SPEED);
     delay(ms);
     update();
 }
 
-void Robot::reverse(int ms, int speed) {
+void Robot::reverse(int ms) {
     stop();
-    motor_left_reverse(speed);
-    motor_right_reverse(speed);
+    motor_left_reverse(SPEED);
+    motor_right_reverse(SPEED);
     delay(ms);
     update();
 }
 
-void Robot::right(int ms, int speed) {
+void Robot::right(int ms) {
     stop();
-    motor_left_forward(speed);
-    motor_right_reverse(speed);
+    motor_left_forward(SPEED);
+    motor_right_reverse(SPEED);
     delay(ms);
+    stop();
     update();
 }
 
-void Robot::left(int ms, int speed) {
+void Robot::left(int ms) {
     stop();
-    motor_left_reverse(speed);
-    motor_right_forward(speed);
+    motor_left_reverse(SPEED);
+    motor_right_forward(SPEED);
     delay(ms);
+    stop();
     update();
 }
 
@@ -107,7 +109,8 @@ int Robot::repeat(int *numbers, int length) {
     }
   }
   
-  int count[max_dist + 1] = {0};
+  int count[max_dist + 1];
+  memset (count, 0, max_dist*sizeof(int));
 
   for(int i = 0; i < length; i++) {
         Serial.print(numbers[i]);
@@ -141,33 +144,33 @@ int Robot::obstacle_detected() {
   update();
   
   int distance_left = get_distance(ultraSoundLeft);
+  int angle_left = ultraSoundLeft->get_angle();
+
   int distance_right = get_distance(ultraSoundRight);
+  int angle_right = ultraSoundRight->get_angle();
+
   int distance_center = get_distance(ultraSoundCenter);
   
-  Serial.print("Center: ");
-  Serial.println(distance_center);
-  Serial.println("");
-  
-  if (distance_center <= obstacle_threshold && distance_center != -1){
+  if (distance_center <= 0.75 * OBSTACLE_DISTANCE && distance_center != -1){
     return 0;
   }
 
-  if (distance_left < obstacle_threshold && distance_right < obstacle_threshold && distance_left != -1 && distance_right != -1) {
+  if (distance_left < OBSTACLE_DISTANCE && distance_right < OBSTACLE_DISTANCE && distance_left != -1 && distance_right != -1) {
 
-    if(distance_left < distance_right) {
-      return 1;
-    } else {
-      return 2;
-    }
-    
+      if(distance_left < distance_right) {
+          return check_angle(ultraSoundLeft);
+      } else {
+          return check_angle(ultraSoundRight);
+      }
+
   }
   
-  if (distance_left < obstacle_threshold && distance_left != -1) {
-    return 1;
+  if (distance_left < OBSTACLE_DISTANCE && distance_left != -1) {
+    return check_angle(ultraSoundLeft);
   }
 
-  if (distance_right < obstacle_threshold && distance_right != -1) {
-    return 2;
+  if (distance_right < OBSTACLE_DISTANCE && distance_right != -1) {
+    return check_angle(ultraSoundLeft);
   }
 
   return -1;
@@ -178,7 +181,32 @@ void Robot::scan() {
     this->ultraSoundRight->scan();
 }
 
+void Robot::scan_left() {
+      this->ultraSoundLeft->scan();
+}
+
+void Robot::scan_right() {
+  this->ultraSoundRight->scan();
+}
+
 void Robot::reset() {
     this->ultraSoundLeft->reset();
     this->ultraSoundRight->reset();
 }
+
+int Robot::check_angle(UltraSound *ultraSound) {
+    if(ultraSound->get_angle()  > 90) {
+        return 2;
+    }
+
+    return 1;
+}
+
+void Robot::set_left_angle(int new_angle) {
+  ultraSoundLeft->set_angle(new_angle);
+}
+
+void Robot::set_right_angle(int new_angle) {
+    ultraSoundRight->set_angle(new_angle);
+}
+

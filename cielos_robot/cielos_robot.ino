@@ -9,7 +9,7 @@
 
 
 // How fast the robot goes
-const int SPEED = 130;
+const int SPEED = 150;
 
 // The distance at which obstacles get detected
 const int OBSTACLE_DISTANCE = 27;
@@ -56,15 +56,15 @@ void loop() {
     // If the obstacle is on the left side or at the center
     if (obstacle == LEFT || obstacle == CENTER) {
         
-        robot.right(300);
+        robot.right(400);
 
     // if the obstacle is on the right
     } else if (obstacle == RIGHT) {
 
-        robot.left(300);
+        robot.left(400);
         
     } else {
-        
+        robot.scan();
         robot.forwards(50);
     }
 

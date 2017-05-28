@@ -113,25 +113,19 @@ int Robot::repeat(int *numbers, int length) {
   memset (count, 0, max_dist*sizeof(int));
 
   for(int i = 0; i < length; i++) {
-        Serial.print(numbers[i]);
-    Serial.print(" ");
     count[numbers[i]]++;
-  }
-    Serial.println(" ");  
+  } 
 
 
   int most_repeated_value = 0;
   int most_repeated_count = 0;
 
   for(int i = 0; i < max_dist + 1; i++) {
-    Serial.print(count[i]);
-    Serial.print(" ");
     if (count[i] > most_repeated_count) {
       most_repeated_value = i;
       most_repeated_count = count[i];
     }
   }
-  Serial.println(" ");  
 
   if (most_repeated_count > 1) {
     return most_repeated_value;
@@ -170,7 +164,7 @@ int Robot::obstacle_detected() {
   }
 
   if (distance_right < OBSTACLE_DISTANCE && distance_right != -1) {
-    return check_angle(ultraSoundLeft);
+    return check_angle(ultraSoundRight);
   }
 
   return -1;

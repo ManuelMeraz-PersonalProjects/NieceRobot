@@ -3,8 +3,8 @@
 Robot::Robot(int SPEED, int OBSTACLE_DISTANCE) {
     Servo servoLeft, servoRight;
 
-    ultraSoundLeft = new UltraSound(18, 19, servoLeft, 9, 25, 125);
-    ultraSoundRight = new UltraSound(14, 15, servoRight, 10, 55, 155);
+    ultraSoundLeft = new UltraSound(18, 19, servoLeft, 10, 55, 165);
+    ultraSoundRight = new UltraSound(14, 15, servoRight, 9, 15, 125);
     ultraSoundCenter = new UltraSound(17, 16);
     motorLeft = new AF_DCMotor(3);
     motorRight = new AF_DCMotor(2);
@@ -23,7 +23,7 @@ Robot::~Robot() {
 void Robot::setup() {
     ultraSoundLeft->setup();
     ultraSoundRight->setup();
-    ultraSoundRight->change_direction();
+    ultraSoundLeft->change_direction();
     ultraSoundCenter->setup();
 
     for(int i = 0; i < 3; i++) {
@@ -196,10 +196,10 @@ void Robot::reset() {
 
 int Robot::check_angle(UltraSound *ultraSound) {
     if(ultraSound->get_angle()  > 90) {
-        return 2;
+        return 1;
     }
 
-    return 1;
+    return 2;
 }
 
 void Robot::set_left_angle(int new_angle) {

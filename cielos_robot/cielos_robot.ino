@@ -32,8 +32,8 @@ Robot robot(SPEED, OBSTACLE_DISTANCE);
  * robot.reset(); This will set the scanners back to the default position of 90 degrees
  *  
  *  These will set the angle of the scanners to the position you want
- *  robot.set_left_angle(); 
- *  robot.set_right_angle();
+ *  robot.set_left_angle(angle); 
+ *  robot.set_right_angle(angle);
  */
 
 
@@ -47,34 +47,17 @@ void loop() {
     // This will tell you whether the robot sees an obstacle
     int obstacle = robot.obstacle_detected();
 
-
-    // If an obstacle is detected
-    if(obstacle != NONE) {
-
-        // Move the scanners back to the default position
-        robot.reset();
-    }
-
     // If the obstacle is on the left side or at the center
-    if (obstacle == LEFT || obstacle == CENTER) {
+    if (obstacle == RIGHT) {
 
-        robot.reverse(300);
-        robot.right(400);
-
-    // If the obstacle is on the right side
-    } else if (obstacle == RIGHT) {
-      
-        robot.reverse(300);
-        robot.left(400);
-
+        robot.set_left_angle(120);
+        
     } else {
-        robot.scan();
-        robot.forwards(50);
-
+      
+      robot.scan_right();
     }
 
-
-
+    delay(300);
 }
 
 

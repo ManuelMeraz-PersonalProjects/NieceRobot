@@ -47,17 +47,27 @@ void loop() {
     // This will tell you whether the robot sees an obstacle
     int obstacle = robot.obstacle_detected();
 
-    // If the obstacle is on the left side or at the center
-    if (obstacle == RIGHT) {
-
-        robot.set_left_angle(120);
-        
-    } else {
-      
-      robot.scan_right();
+    // If an obstacle is detected
+    if (obstacle != NONE) {
+        robot.reset();
+        robot.reverse(300);
     }
 
-    delay(300);
+    // If the obstacle is on the left side or at the center
+    if (obstacle == LEFT || obstacle == CENTER) {
+        
+        robot.right(300);
+
+    // if the obstacle is on the right
+    } else if (obstacle == RIGHT) {
+
+        robot.left(300);
+        
+    } else {
+        
+        robot.forwards(50);
+    }
+
 }
 
 
